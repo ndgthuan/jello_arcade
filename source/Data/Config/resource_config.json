@@ -1,0 +1,19 @@
+{
+  "textures": {
+    "TitleLogo": "source/Data/Resources/assets/textures/logo.png",
+    "MenuBackground": "source/Data/Resources/assets/images/MenuBackground.png",
+    "play": "source/Data/Resources/assets/textures/play.png",
+    "settings": "source/Data/Resources/assets/textures/settings.png",
+    "info": "source/Data/Resources/assets/textures/info.png",
+    "interrogation": "source/Data/Resources/assets/textures/interrogation.png",
+    "account": "source/Data/Resources/assets/textures/account.png"
+  },
+  "fonts": {
+    "main": "source/Data/Resources/assets/fonts/font.ttf",
+    "peter-light": "source/Data/Resources/assets/fonts/corbel-light.ttf",
+    "helvetica-ultra-light": "source/Data/Resources/assets/fonts/helvetica-neue-lt-std-ultra-light.otf"
+  },
+  "audio": {
+    "menu_click": "source/Data/Resources/assets/audio/MenuClickSound.ogg"
+  }
+}

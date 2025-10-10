@@ -1,0 +1,58 @@
+{
+    "games": {
+        "tetris": {
+            "name": "Tetris",
+            "description": "Classic block stacking puzzle game",
+            "icon": "tetris_icon",
+            "config_file": "tetris_config.json",
+            "enabled": true,
+            "default_keys": {
+                "move_left": "A",
+                "move_right": "D",
+                "rotate": "W",
+                "drop": "S",
+                "hard_drop": "Space"
+            }
+        },
+        "snake": {
+            "name": "Snake",
+            "description": "Grow your snake by eating food",
+            "icon": "snake_icon",
+            "config_file": "snake_config.json",
+            "enabled": true,
+            "default_keys": {
+                "move_up": "W",
+                "move_down": "S",
+                "move_left": "A",
+                "move_right": "D"
+            }
+        },
+        "pong": {
+            "name": "Pong",
+            "description": "Classic paddle and ball game",
+            "icon": "pong_icon",
+            "config_file": "pong_config.json",
+            "enabled": true,
+            "default_keys": {
+                "paddle_up": "W",
+                "paddle_down": "S"
+            }
+        },
+        "flappy": {
+            "name": "Flappy Bird",
+            "description": "Navigate through pipes",
+            "icon": "flappy_icon",
+            "config_file": "flappy_config.json",
+            "enabled": true,
+            "default_keys": {
+                "flap": "Space"
+            }
+        }
+    },
+    "game_selection": {
+        "menu_layout": "circle",
+        "default_game": "tetris",
+        "auto_save_progress": true,
+        "show_high_scores": true
+    }
+}

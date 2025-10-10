@@ -1,0 +1,18 @@
+{
+    "keyboard": {
+        "fullscreen_toggle": "F11",
+        "exit": "Escape",
+        "pause": "P",
+        "menu": "M"
+    },
+    "mouse": {
+        "left_click": "Left",
+        "right_click": "Right",
+        "middle_click": "Middle"
+    },
+    "window": {
+        "close": "Close",
+        "resize": "Resized",
+        "focus": "Focus"
+    }
+}
