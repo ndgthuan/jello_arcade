@@ -12,17 +12,3 @@
 [2025-09-27 13:40:42.231] [INFO] Resource configuration loaded successfully
 [2025-09-27 13:40:42.241] [INFO] Game window created successfully
 [2025-09-27 13:41:06.423] [INFO] Game application closed normally
-[2025-10-10 11:02:08.339] [INFO] Starting Jello Game Application
-[2025-10-10 11:02:08.647] [INFO] Loading resource configuration...
-[2025-10-10 11:02:08.647] [INFO] Loading config from: source/Data/Config/resource_config.json
-[2025-10-10 11:02:08.647] [INFO] Found textures section in config
-[2025-10-10 11:02:08.771] [INFO] Loaded 7/7 textures
-[2025-10-10 11:02:08.771] [INFO] Found fonts section in config
-[2025-10-10 11:02:08.791] [INFO] Loaded 3/3 fonts
-[2025-10-10 11:02:08.791] [INFO] Found audio section in config
-[2025-10-10 11:02:09.267] [INFO] Audio loaded: menu_click from source/Data/Resources/assets/audio/MenuClickSound.ogg
-[2025-10-10 11:02:09.267] [INFO] Loaded 1/1 audio files
-[2025-10-10 11:02:09.267] [INFO] Successfully loaded resource config: source/Data/Config/resource_config.json
-[2025-10-10 11:02:09.267] [INFO] Resource configuration loaded successfully
-[2025-10-10 11:02:09.275] [INFO] Game window created successfully
-[2025-10-10 11:02:25.148] [INFO] Game application closed normally

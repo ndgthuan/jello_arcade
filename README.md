@@ -1,153 +1,105 @@
-# Jello Game Menu - PanningMenu Project
+# Jello Game Menu
 
-## 📖 Overview
+A beautiful, interactive menu application built with C++ and SFML 3.0 featuring smooth camera panning and modern UI effects.
 
-Jello is a game menu application built with C++ and SFML using modern object-oriented architecture. The project features camera panning that follows mouse movement to create smooth and engaging interactive experiences.
+## ✨ Features
 
-## ✨ Key Features
-
-### 🎮 Menu System
 - **Interactive Menu**: Main menu with "Jello" text featuring dynamic glow effects
 - **Circle Menu**: 5 interactive icons (Play, Settings, Info, Account, Exit)
-- **Hover Effects**: Smooth hover animations with transitions
-- **Click Sounds**: Audio feedback on interactions
+- **Camera Panning**: Mouse-following camera with momentum and smooth movement
+- **Particle Effects**: Dynamic background particles
+- **Audio Feedback**: Click sounds and audio effects
 - **Responsive Design**: Automatically adjusts to window size
+- **Modern UI**: Clean, minimalist design with hover effects
 
-### 📷 Camera System
-- **Mouse Panning**: Camera follows mouse movement with momentum
-- **Smooth Movement**: Fluid motion with interpolation
-- **Boundary Awareness**: Camera constrained within background bounds
-- **Configurable**: Customizable speed and momentum settings
+## 🎮 Controls
 
-### 🎨 Rendering System
-- **Background Rendering**: Background display with panning support
-- **Particle System**: Dynamic particle effects
-- **UI Rendering**: UI unaffected by camera movement
-- **Teal Theme**: Beautiful teal color scheme
+- **Mouse**: Move to pan camera, click to interact with menu items
+- **F11**: Toggle fullscreen mode
+- **Escape**: Exit application
 
-### ⌨️ Input System
-- **Mouse Tracking**: Precise mouse movement tracking
-- **Click Handling**: Comprehensive click event processing
-- **Keyboard Shortcuts**: 
-  - `F11`: Toggle fullscreen
-  - `Escape`: Exit application
-- **Key Binding**: JSON-configurable key bindings
+## 🚀 Quick Start
 
-## 🏗️ Project Architecture
+### Prerequisites
+- C++23 compatible compiler
+- SFML 3.0 libraries
+- CMake 3.16+
 
-### 📁 Directory Structure
-```
-PanningMenu/
-├── source/
-│   ├── Data/                    # Data Layer
-│   │   ├── Config/             # Configuration files
-│   │   ├── Logging/            # Logging system
-│   │   └── Resources/          # Asset management
-│   └── Presentation/           # Presentation Layer
-│       ├── Core/              # Core game systems
-│       ├── Input/             # Input handling
-│       ├── Rendering/         # Rendering systems
-│       └── UI/                # User interface
-├── release/                    # Executable files
-└── game.log                   # Log file
+### Build & Run
+
+```bash
+# Clone repository
+git clone <repository-url>
+cd ModernMenuGame
+
+# Build (Windows)
+build.bat
+
+# Build (Linux/Mac)
+chmod +x build.sh
+./build.sh
+
+# Run
+./release/Jello.exe
 ```
 
-### 🎯 Design Patterns
+### Manual Build
+```bash
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build . --config Release
+```
+
+## 📁 Project Structure
+
+```
+ModernMenuGame/
+├── source/                   # Source code
+│   ├── main.cpp             # Entry point
+│   ├── Data/                # Data Layer
+│   │   ├── Config/          # Configuration files
+│   │   ├── Logging/         # Logging system
+│   │   └── Resources/       # Asset management
+│   └── Presentation/        # Presentation Layer
+│       ├── Core/            # Core game systems
+│       ├── Input/           # Input handling
+│       ├── Rendering/       # Rendering systems
+│       └── UI/              # User interface
+├── release/                 # Built executable
+└── game.log                 # Log file
+```
+
+## 🎯 Design Patterns
+
 - **Singleton**: Logger, ResourceManager, AudioManager
 - **Dependency Injection**: Services and configuration
 - **Facade**: MenuUI, GameCoordinator
 - **Observer**: Callback system
 - **Factory**: KeyBindingFactory
 
-## 🚀 Installation and Running
-
-### System Requirements
-- **Compiler**: C++17 compatible (GCC, Clang, MSVC)
-- **Libraries**: SFML 2.5+ (Graphics, Audio, System, Window)
-- **OS**: Windows, Linux, macOS
-
-### Build from Source
-
-#### Method 1: Using CMake (Recommended)
-```bash
-# Clone repository
-git clone <repository-url>
-cd PanningMenu
-
-# Option A: Use build script (Windows)
-build.bat
-
-# Option B: Use build script (Linux/Mac)
-chmod +x build.sh
-./build.sh
-
-# Option C: Manual CMake build
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-cmake --build . --config Release
-
-# The executable will be created in release/ directory
-# Output: release/Jello.exe (Windows) or release/Jello (Linux/Mac)
-```
-
-#### Method 2: Direct Compilation (Windows)
-```bash
-# Navigate to project directory
-cd PanningMenu
-
-# Compile directly with g++
-g++ -std=c++23 -I"C:\Program Files\SFML-3.0.0\include" -L"C:\Program Files\SFML-3.0.0\lib" source\main.cpp source\Data\Resources\*.cpp .\source\Presentation\Rendering\*.cpp source\Presentation\Core\*.cpp .\source\Presentation\Input\*.cpp .\source\Presentation\UI\*.cpp .\source\Data\Config\*.cpp .\source\Data\Logging\*.cpp -o .\release\Jello.exe -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
-```
-
-#### Method 3: Using Visual Studio
-```bash
-# Open CMakeLists.txt in Visual Studio
-# Or generate Visual Studio project files:
-mkdir build
-cd build
-cmake .. -G "Visual Studio 17 2022"
-# Open the generated .sln file in Visual Studio
-```
-
-### Run Application
-```bash
-# Run executable from release directory
-.\release\Jello.exe
-
-# Or from build directory (if using CMake)
-.\build\Release\Jello.exe
-```
-
 ## ⚙️ Configuration
 
-### 📄 Configuration Files
-
-#### `games_config.json`
-```json
-{
-  "games": {
-    "tetris": {
-      "name": "Tetris",
-      "description": "Classic block stacking puzzle game",
-      "enabled": true
-    }
-  }
-}
-```
+### Configuration Files
 
 #### `resource_config.json`
 ```json
 {
   "textures": {
-    "TitleLogo": "path/to/logo.png",
-    "MenuBackground": "path/to/background.png"
+    "TitleLogo": "source/Data/Resources/assets/textures/logo.png",
+    "MenuBackground": "source/Data/Resources/assets/images/MenuBackground.png",
+    "play": "source/Data/Resources/assets/textures/play.png",
+    "settings": "source/Data/Resources/assets/textures/settings.png",
+    "info": "source/Data/Resources/assets/textures/info.png",
+    "interrogation": "source/Data/Resources/assets/textures/interrogation.png",
+    "account": "source/Data/Resources/assets/textures/account.png"
   },
   "fonts": {
-    "main": "path/to/font.ttf"
+    "main": "source/Data/Resources/assets/fonts/font.ttf",
+    "peter-light": "source/Data/Resources/assets/fonts/corbel-light.ttf",
+    "helvetica-ultra-light": "source/Data/Resources/assets/fonts/helvetica-neue-lt-std-ultra-light.otf"
   },
   "audio": {
-    "menu_click": "path/to/click.ogg"
+    "menu_click": "source/Data/Resources/assets/audio/MenuClickSound.ogg"
   }
 }
 ```
@@ -158,19 +110,25 @@ cmake .. -G "Visual Studio 17 2022"
   "keyboard": {
     "fullscreen_toggle": "F11",
     "exit": "Escape",
-    "pause": "P"
+    "pause": "P",
+    "menu": "M"
+  },
+  "mouse": {
+    "left_click": "Left",
+    "right_click": "Right",
+    "middle_click": "Middle"
   }
 }
 ```
 
 ## 🎨 UI Components
 
-### 🎯 MenuUI
+### MenuUI
 - **TitleText**: "Jello" text with glow effects
-- **CircleMenu**: Circular menu with icons
+- **CircleMenu**: Circular menu with 5 interactive icons
 - **Button**: Exit button with hover effects
 
-### 🎨 Visual Effects
+### Visual Effects
 - **Glow Animation**: Dynamic glow effects on title text
 - **Hover Effects**: Icon scaling and color changes
 - **Smooth Transitions**: Fluid animations
@@ -178,18 +136,18 @@ cmake .. -G "Visual Studio 17 2022"
 
 ## 🔧 Development
 
-### 📝 Logging System
+### Logging System
 - **Thread-safe**: Mutex protection for concurrent access
 - **Multiple Levels**: DEBUG, INFO, WARNING, ERROR, CRITICAL
-- **File Output**: Logs written to file
+- **File Output**: Logs written to `game.log`
 - **Console Output**: Warnings+ displayed on console
 
-### 🎵 Audio System
+### Audio System
 - **Sound Effects**: Menu click sounds
 - **Volume Control**: Adjustable audio levels
 - **Resource Management**: Load and cache audio files
 
-### 🖼️ Resource Management
+### Resource Management
 - **Singleton Pattern**: Centralized resource access
 - **JSON Configuration**: Load resources from config files
 - **Error Handling**: Graceful fallback when loading fails
@@ -215,7 +173,7 @@ while (window.isOpen()) {
 ## 🐛 Troubleshooting
 
 ### Common Issues
-1. **SFML not found**: Install SFML libraries
+1. **SFML not found**: Install SFML 3.0 libraries
 2. **Assets not loading**: Check file paths in config files
 3. **Audio issues**: Check audio drivers and file formats
 
@@ -226,13 +184,13 @@ while (window.isOpen()) {
 
 ## 📊 Performance
 
-### 🎯 Optimizations
+### Optimizations
 - **Smart Pointers**: Automatic memory management
 - **Efficient Rendering**: Batch rendering operations
 - **Smooth Animations**: 60 FPS target
 - **Resource Caching**: Load once, use many times
 
-### 📈 Metrics
+### Metrics
 - **Memory Usage**: Optimized with smart pointers
 - **Frame Rate**: Smooth 60 FPS
 - **Load Time**: Fast resource loading
@@ -240,13 +198,13 @@ while (window.isOpen()) {
 
 ## 🤝 Contributing
 
-### 📋 Code Standards
-- **C++17**: Modern C++ features
+### Code Standards
+- **C++23**: Modern C++ features
 - **Clean Code**: Readable and maintainable
 - **Documentation**: Comment important functions
 - **Error Handling**: Proper exception handling
 
-### 🔄 Development Workflow
+### Development Workflow
 1. Fork repository
 2. Create feature branch
 3. Implement changes
@@ -255,13 +213,13 @@ while (window.isOpen()) {
 
 ## 📄 License
 
-This project is released under the [MIT License](LICENSE).
+This project is released under the MIT License.
 
 ## 👥 Authors
 
 - **Developer**: Nguyễn Dương Gia Thuận
 - **Architecture**: Clean Architecture with SOLID principles
-- **Framework**: SFML 2.5+
+- **Framework**: SFML 3.0
 
 ## 🔗 Links
 
@@ -271,4 +229,4 @@ This project is released under the [MIT License](LICENSE).
 
 ---
 
-**Jello Game Menu** - An excellent example of modern game architecture with C++ and SFML! 🎮✨
+**Jello Game Menu** - An excellent example of modern game architecture with C++ and SFML 3.0! 🎮✨
