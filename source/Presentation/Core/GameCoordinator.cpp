@@ -139,6 +139,11 @@ void GameCoordinator::setExitCallback(std::function<void()> callback)
     m_uiManager.setExitCallback(callback);
 }
 
+void GameCoordinator::setIconCallback(std::function<void(int)> callback)
+{
+    m_uiManager.getMenuUI().setIconCallback(std::move(callback));
+}
+
 // Game management methods implementation
 void GameCoordinator::switchToGame(int gameIndex)
 {

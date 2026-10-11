@@ -177,6 +177,10 @@ void MenuUI::handleClick(const sf::Vector2f &clickPos)
             if (bounds.contains(clickPos))
             {
                 AudioManager::getInstance().playSound("menu_click");
+                if (m_iconCallback)
+                {
+                    m_iconCallback(static_cast<int>(i));
+                }
                 break;
             }
         }

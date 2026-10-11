@@ -3,6 +3,22 @@
 #include "../../Data/Config/UIConfig.h"
 #include "../../Data/Resources/Audio.h"
 #include <iostream>
+#include <algorithm>
+#include <cmath>
+
+// Soft dark shadow under text so it stays readable over bright parts of the background
+static void drawTextShadow(sf::RenderWindow &window, const sf::Text &text, float strength = 1.0f)
+{
+    sf::Text shadow = text;
+    const sf::Vector2f base = text.getPosition();
+    const float offsets[3][3] = {{0.0f, 2.0f, 90.0f}, {1.0f, 4.0f, 55.0f}, {-1.0f, 6.0f, 30.0f}};
+    for (const auto &o : offsets)
+    {
+        shadow.setFillColor(sf::Color(0, 20, 30, static_cast<std::uint8_t>(o[2] * strength)));
+        shadow.setPosition({base.x + o[0], base.y + o[1]});
+        window.draw(shadow);
+    }
+}
 
 // ===== POSITIONING STRATEGIES IMPLEMENTATION =====
 
@@ -192,6 +208,7 @@ void Button::draw(sf::RenderWindow &window)
     }
 
     // Draw text on top
+    drawTextShadow(window, *m_text);
     window.draw(*m_text);
 }
 
@@ -392,6 +409,7 @@ void TitleText::draw(sf::RenderWindow &window)
     // Draw title text
     if (m_text)
     {
+        drawTextShadow(window, *m_text, 0.8f);
         window.draw(*m_text);
     }
 }
@@ -567,8 +585,17 @@ void CircleItem::updateHover(const sf::Vector2f &mousePos)
     m_hoverScaleTarget = m_isHovered ? 1.2f : 1.0f; // Default from UIConfig
 }
 
+void CircleItem::setPrimary(bool primary, const sf::Color &accent)
+{
+    m_primary = primary;
+    m_accent = accent;
+    if (primary)
+        m_circle.setFillColor(accent);
+}
+
 void CircleItem::update(float deltaTime)
 {
+    m_pulseTime += deltaTime;
     updateHoverAnimation(deltaTime);
 }
 
@@ -581,6 +608,19 @@ void CircleItem::draw(sf::RenderWindow &window)
 {
     if (!m_isInitialized)
         return;
+
+    // Pulsing ring behind the primary item
+    if (m_primary)
+    {
+        float phase = std::fmod(m_pulseTime * 0.6f, 1.0f);
+        float r = m_circle.getRadius() * (1.0f + 0.45f * phase);
+        sf::CircleShape ring(r);
+        ring.setPosition({m_circle.getPosition().x + m_circle.getRadius() - r, m_circle.getPosition().y + m_circle.getRadius() - r});
+        ring.setFillColor(sf::Color::Transparent);
+        ring.setOutlineThickness(2.0f);
+        ring.setOutlineColor(sf::Color(m_accent.r, m_accent.g, m_accent.b, static_cast<std::uint8_t>(150 * (1.0f - phase))));
+        window.draw(ring);
+    }
 
     // Draw circle with hover scale
     sf::CircleShape scaledCircle = m_circle;
@@ -643,9 +683,12 @@ void CircleItem::draw(sf::RenderWindow &window)
         window.draw(scaledIcon);
     }
 
-    // Draw label when hovering
-    if (m_isHovered && m_label.has_value())
+    // Labels stay visible (dimmed) so icons are never ambiguous; hover brings them to full strength
+    if (m_label.has_value())
     {
+        float t = std::clamp((m_hoverScale - 1.0f) / 0.2f, 0.0f, 1.0f);
+        m_label->setFillColor(sf::Color(255, 255, 255, static_cast<std::uint8_t>(225 + 30 * t)));
+        drawTextShadow(window, *m_label, 1.8f);
         window.draw(*m_label);
     }
 }
@@ -725,7 +768,7 @@ void CircleMenu::setupCircleItems()
     // Get font for labels
     if (!m_resourceService)
         return;
-    const sf::Font &helveticaFont = m_resourceService->getFont("helvetica-ultra-light");
+    const sf::Font &helveticaFont = m_resourceService->getFont("peter-light"); // heavier than ultra-light, stays legible over the artwork
 
     // Create icon positioning strategy
     auto iconStrategy = std::make_shared<DefaultIconPositioningStrategy>();
@@ -744,6 +787,12 @@ void CircleMenu::setupCircleItems()
         if (i < labelTexts.size())
         {
             m_circleItems[i]->setLabel(labelTexts[i], helveticaFont);
+        }
+
+        // "Play" is the main action
+        if (i == 0)
+        {
+            m_circleItems[i]->setPrimary(true, sf::Color(255, 226, 150));
         }
     }
 }

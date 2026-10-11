@@ -5,7 +5,7 @@
             "description": "Classic block stacking puzzle game",
             "icon": "tetris_icon",
             "config_file": "tetris_config.json",
-            "enabled": true,
+            "enabled": false,
             "default_keys": {
                 "move_left": "A",
                 "move_right": "D",
@@ -19,7 +19,7 @@
             "description": "Grow your snake by eating food",
             "icon": "snake_icon",
             "config_file": "snake_config.json",
-            "enabled": true,
+            "enabled": false,
             "default_keys": {
                 "move_up": "W",
                 "move_down": "S",
@@ -32,7 +32,7 @@
             "description": "Classic paddle and ball game",
             "icon": "pong_icon",
             "config_file": "pong_config.json",
-            "enabled": true,
+            "enabled": false,
             "default_keys": {
                 "paddle_up": "W",
                 "paddle_down": "S"
@@ -43,7 +43,7 @@
             "description": "Navigate through pipes",
             "icon": "flappy_icon",
             "config_file": "flappy_config.json",
-            "enabled": true,
+            "enabled": false,
             "default_keys": {
                 "flap": "Space"
             }

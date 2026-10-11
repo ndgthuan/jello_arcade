@@ -35,6 +35,8 @@ private:
     // Camera state variables
     sf::View m_camera;            // Current camera view
     sf::Vector2f m_cameraCenter;  // Camera center position
+    sf::FloatRect m_panLimits;    // Allowed range for the camera center (keeps the view inside the background)
+    bool m_hasPanLimits = false;
     sf::Vector2f m_lastMousePos;  // Previous mouse position for velocity calculation
     sf::Vector2f m_mouseVelocity; // Mouse movement velocity for momentum
 

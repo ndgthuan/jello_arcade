@@ -29,6 +29,7 @@ public:
     // Window control methods
     virtual void setWindowCloseCallback(std::function<void()> callback) = 0;
     virtual void setExitCallback(std::function<void()> callback) = 0;
+    virtual void setIconCallback(std::function<void(int)> callback) = 0;
 
     // Game management methods (new for 4 games)
     virtual void switchToGame(int gameIndex) = 0;

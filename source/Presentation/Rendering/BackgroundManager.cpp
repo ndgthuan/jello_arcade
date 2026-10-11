@@ -1,4 +1,5 @@
 #include "BackgroundManager.h"
+#include "../Game/Scene.h"
 #include "../UI/UIServices.h"
 #include "../../Data/Logging/Logger.h"
 
@@ -12,7 +13,8 @@ BackgroundManager::BackgroundManager(std::shared_ptr<IResourceService> resourceS
 }
 
 BackgroundManager::BackgroundManager(const BackgroundManager &other)
-    : m_isInitialized(other.m_isInitialized), m_textureId(other.m_textureId), m_resourceService(other.m_resourceService)
+    : m_generatedTexture(other.m_generatedTexture), m_cover(other.m_cover), m_isInitialized(other.m_isInitialized),
+      m_textureId(other.m_textureId), m_resourceService(other.m_resourceService)
 {
     if (other.m_background)
     {
@@ -50,6 +52,27 @@ void BackgroundManager::loadBackground(const std::string &textureId)
     }
 }
 
+void BackgroundManager::generateTwilight()
+{
+    // Draw the game scene once at 1.8x its logical size (2304x1296) into a texture
+    constexpr unsigned int kWidth = 2304;
+    constexpr unsigned int kHeight = 1296;
+    sf::RenderTexture target(sf::Vector2u{kWidth, kHeight});
+    target.setView(sf::View(sf::FloatRect({0.0f, 0.0f}, {Flappy::kWidth, Flappy::kHeight})));
+    target.clear(sf::Color(10, 15, 60));
+
+    Flappy::Scene scene;
+    scene.draw(target);
+    scene.drawVignette(target, 0.7f);
+    target.display();
+
+    m_generatedTexture = std::make_shared<sf::Texture>(target.getTexture());
+    m_generatedTexture->setSmooth(true);
+    m_background = std::make_unique<sf::Sprite>(*m_generatedTexture);
+    m_cover = true;
+    m_isInitialized = true;
+}
+
 void BackgroundManager::setBackgroundScale(float scaleX, float scaleY)
 {
     if (m_background)
@@ -70,6 +93,14 @@ void BackgroundManager::centerBackground(const sf::Vector2f &windowSize)
 {
     if (!m_background)
         return;
+
+    // Generated background: scale (uniformly) to cover the window with a 20% margin for camera panning
+    if (m_cover)
+    {
+        const sf::Vector2u size = m_background->getTexture().getSize();
+        const float s = std::max(windowSize.x * 1.2f / static_cast<float>(size.x), windowSize.y * 1.2f / static_cast<float>(size.y));
+        m_background->setScale(sf::Vector2f(s, s));
+    }
 
     // Get texture dimensions
     sf::Vector2u texSize = m_background->getTexture().getSize();

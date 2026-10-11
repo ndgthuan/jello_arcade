@@ -1,4 +1,4 @@
-# Jello Game Menu
+# Jello
 
 A beautiful, interactive menu application built with C++ and SFML 3.0 featuring smooth camera panning and modern UI effects.
 
@@ -12,11 +12,26 @@ A beautiful, interactive menu application built with C++ and SFML 3.0 featuring 
 - **Responsive Design**: Automatically adjusts to window size
 - **Modern UI**: Clean, minimalist design with hover effects
 
+## What is in it
+
+- **Play**: a game chooser with five arcade games, each with glossy 3D visuals, explosions, synthesized sound and its own music:
+  **Jello Bounce** (flap through pipes), **Jello Smash** (breakout with power-ups and chain-reaction bombs),
+  **Jello Blaster** (side-scrolling space shooter with a boss), **Jello Slither** (snake that blows up chain by chain)
+  and **Jello Stack** (drop sliding blocks, build the tower, chase PERFECT drops).
+- **Settings**: music / effects volume, mute, jello colour (4 choices), difficulty (Easy / Normal / Hard), screen shake, fullscreen.
+- **Credits**, **Help**: who made it, and a Help page with tabs for every game.
+- **Trophies**: 20 achievements per profile (open them from Alt Manager); a banner slides in when one unlocks.
+- **Alt Manager**: local player profiles (up to 6) with their own best score per game and difficulty, games played and total score.
+- The main menu has its own music and a jello mascot that watches your mouse.
+- Settings and profiles are saved in `userdata.json` next to the game (created on first run, ignored by git).
+- The menu background and every picture in the game are drawn in code, and all sounds and music are synthesized in code.
+
 ## 🎮 Controls
 
 - **Mouse**: Move to pan camera, click to interact with menu items
 - **F11**: Toggle fullscreen mode
 - **Escape**: Exit application
+- **M** (in game): mute / unmute
 
 ## 🚀 Quick Start
 
@@ -39,16 +54,18 @@ build.bat
 chmod +x build.sh
 ./build.sh
 
-# Run
+# Run (from the repository root, asset paths are relative)
 ./release/Jello.exe
 ```
 
 ### Manual Build
 ```bash
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=<path to SFML 3 install>
 cmake --build . --config Release
 ```
+
+SFML DLLs are copied next to `Jello.exe` automatically after the build.
 
 ## 📁 Project Structure
 
@@ -105,6 +122,7 @@ ModernMenuGame/
 ```
 
 #### `Keybinds.json`
+Only `fullscreen_toggle` and `exit` are used so far; `pause` and `menu` are reserved.
 ```json
 {
   "keyboard": {
@@ -182,20 +200,6 @@ while (window.isOpen()) {
 - Use console output for warnings
 - Verify resource loading in logs
 
-## 📊 Performance
-
-### Optimizations
-- **Smart Pointers**: Automatic memory management
-- **Efficient Rendering**: Batch rendering operations
-- **Smooth Animations**: 60 FPS target
-- **Resource Caching**: Load once, use many times
-
-### Metrics
-- **Memory Usage**: Optimized with smart pointers
-- **Frame Rate**: Smooth 60 FPS
-- **Load Time**: Fast resource loading
-- **Responsiveness**: Low input latency
-
 ## 🤝 Contributing
 
 ### Code Standards
@@ -229,4 +233,4 @@ This project is released under the MIT License.
 
 ---
 
-**Jello Game Menu** - An excellent example of modern game architecture with C++ and SFML 3.0! 🎮✨
+**Jello** - a menu built with C++ and SFML 3.0.

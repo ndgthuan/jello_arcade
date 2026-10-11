@@ -47,6 +47,7 @@ public:
     // Window control methods - implementing IGameCoordinator interface
     void setWindowCloseCallback(std::function<void()> callback) override;
     void setExitCallback(std::function<void()> callback) override;
+    void setIconCallback(std::function<void(int)> callback) override;
 
     // Game management methods - implementing IGameCoordinator interface
     void switchToGame(int gameIndex) override;

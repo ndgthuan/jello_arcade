@@ -1,5 +1,5 @@
 @echo off
-echo Building Jello Game Menu...
+echo Building Jello...
 
 REM Create build directory if it doesn't exist
 if not exist build mkdir build

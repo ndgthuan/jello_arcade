@@ -1,0 +1,13 @@
+# Build output
+build/
+release/
+game.log
+
+# Editors / OS
+.vs/
+.vscode/
+*.user
+.DS_Store
+flappy_best.dat
+userdata.json
+docs/*.png

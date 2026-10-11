@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(JelloGameMenu)
+project(Jello)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 23)
@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/release)
 
 # Find SFML
-find_package(SFML 3.0 REQUIRED COMPONENTS graphics window system audio)
+find_package(SFML 3.0 REQUIRED COMPONENTS Graphics Window System Audio)
 
 # Include directories
 include_directories(${CMAKE_SOURCE_DIR}/source)
@@ -37,13 +37,39 @@ set(SOURCES
     source/Presentation/UI/UIComponents.cpp
     source/Presentation/UI/UIServices.cpp
     source/Presentation/UI/GameSelectionUI.cpp
+    source/Presentation/Game/UiKit.cpp
+    source/Presentation/Game/GameAudio.cpp
+    source/Presentation/Game/Jello.cpp
+    source/Presentation/Game/PipeField.cpp
+    source/Presentation/Game/Scene.cpp
+    source/Presentation/Game/Effects.cpp
+    source/Presentation/Game/Hud.cpp
+    source/Presentation/Game/ReadyOverlay.cpp
+    source/Presentation/Game/PauseOverlay.cpp
+    source/Presentation/Game/GameOverOverlay.cpp
+    source/Presentation/Game/FlappyGame.cpp
+    source/Presentation/Game/Toast.cpp
+    source/Presentation/Game/StackGame.cpp
+    source/Presentation/Game/MenuMascot.cpp
+    source/Presentation/Panels/TrophiesPanel.cpp
+    source/Presentation/Game/ArcadeGame.cpp
+    source/Presentation/Game/SmashGame.cpp
+    source/Presentation/Game/BlasterGame.cpp
+    source/Presentation/Game/SlitherGame.cpp
+    source/Presentation/Panels/GamePickerPanel.cpp
+    source/Data/Profile/UserData.cpp
+    source/Presentation/Panels/Widgets.cpp
+    source/Presentation/Panels/SettingsPanel.cpp
+    source/Presentation/Panels/InfoPanels.cpp
+    source/Presentation/Panels/AccountPanel.cpp
+    source/Presentation/Panels/PanelManager.cpp
 )
 
 # Create executable
 add_executable(Jello ${SOURCES})
 
 # Link SFML libraries
-target_link_libraries(Jello sfml-graphics sfml-window sfml-system sfml-audio)
+target_link_libraries(Jello SFML::Graphics SFML::Window SFML::System SFML::Audio)
 
 # Copy assets to output directory
 file(COPY ${CMAKE_SOURCE_DIR}/source/Data/Resources/assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
@@ -55,15 +81,11 @@ set_target_properties(Jello PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
 )
 
-# Windows specific settings
-if(WIN32)
-    # Set output name
-    set_target_properties(Jello PROPERTIES OUTPUT_NAME "Jello")
-    
-    # Copy SFML DLLs if needed (for dynamic linking)
-    if(SFML_DYNAMIC)
-        # This would copy SFML DLLs, but for static linking we don't need this
-    endif()
+# Copy SFML runtime DLLs next to the executable when SFML is built as shared libs
+if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.21)
+    add_custom_command(TARGET Jello POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:Jello> $<TARGET_FILE_DIR:Jello>
+        COMMAND_EXPAND_LISTS)
 endif()
 
 # Print build information

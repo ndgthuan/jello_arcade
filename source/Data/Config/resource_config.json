@@ -1,7 +1,6 @@
 {
   "textures": {
     "TitleLogo": "source/Data/Resources/assets/textures/logo.png",
-    "MenuBackground": "source/Data/Resources/assets/images/MenuBackground.png",
     "play": "source/Data/Resources/assets/textures/play.png",
     "settings": "source/Data/Resources/assets/textures/settings.png",
     "info": "source/Data/Resources/assets/textures/info.png",

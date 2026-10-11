@@ -24,6 +24,8 @@ public:
     void setSelected(bool selected);                                                                                                                                      // Set hover/selection state
     void update(float deltaTime);                                                                                                                                         // Update animations and effects
     void updateHover(const sf::Vector2f &mousePos);                                                                                                                       // Update hover state for all components
+    // Called with the index of the clicked menu icon (0 Play, 1 Settings, 2 Credits, 3 Help, 4 Alt Manager)
+    void setIconCallback(std::function<void(int)> callback) { m_iconCallback = std::move(callback); }
     void handleClick(const sf::Vector2f &clickPos);                                                                                                                       // Handle button clicks
     void draw(sf::RenderWindow &window);                                                                                                                                  // Render UI elements
 
@@ -39,6 +41,7 @@ private:
     std::unique_ptr<Button> m_exitButton;     // Exit button with hover effects
     std::unique_ptr<TitleText> m_titleText;   // Jello title with glow effects
     std::unique_ptr<CircleMenu> m_circleMenu; // Circle menu with icons
+    std::function<void(int)> m_iconCallback;  // Called when a circle menu icon is clicked
 
     // State
     bool m_isInitialized;   // Initialization state flag

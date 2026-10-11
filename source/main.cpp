@@ -1,12 +1,19 @@
 #include "Presentation/Core/GameWindow.h"
 #include "Presentation/UI/UIServices.h"
 #include "Data/Logging/Logger.h"
+#include "Data/Profile/UserData.h"
 
 int main()
 {
     // Initialize logger
     Logger::getInstance().initialize("game.log");
     Logger::getInstance().info("Starting Jello Game Application");
+
+    // Settings and player profiles (userdata.json); defaults on first run
+    if (UserData::instance().load())
+    {
+        Logger::getInstance().info("Loaded userdata.json");
+    }
 
     try
     {

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Building Jello Game Menu..."
+echo "Building Jello..."
 
 # Create build directory if it doesn't exist
 mkdir -p build

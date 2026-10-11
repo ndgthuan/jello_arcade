@@ -1,4 +1,5 @@
 #include "CameraManager.h"
+#include <algorithm>
 
 CameraManager::CameraManager() : m_cameraCenter(0, 0), m_lastMousePos(0, 0), m_mouseVelocity(0, 0)
 {
@@ -17,6 +18,12 @@ void CameraManager::initialize(const sf::RenderWindow &window, std::shared_ptr<I
 
 void CameraManager::updateCamera(const sf::FloatRect &backgroundBounds, const sf::Vector2f &mousePos, const sf::Vector2f &windowSize)
 {
+    // Remember where the camera may go so momentum cannot push the view past the background
+    m_panLimits = sf::FloatRect(
+        {backgroundBounds.position.x + windowSize.x / 2.0f, backgroundBounds.position.y + windowSize.y / 2.0f},
+        {std::max(0.0f, backgroundBounds.size.x - windowSize.x), std::max(0.0f, backgroundBounds.size.y - windowSize.y)});
+    m_hasPanLimits = true;
+
     // Calculate window center for coordinate calculations
     sf::Vector2f windowCenter = windowSize / 2.0f;
 
@@ -96,6 +103,15 @@ void CameraManager::setView(sf::RenderWindow &window)
 
 void CameraManager::updateCamera()
 {
+    // Keep the view inside the background when it is larger than the window
+    if (m_hasPanLimits)
+    {
+        if (m_panLimits.size.x > 0.0f)
+            m_cameraCenter.x = std::clamp(m_cameraCenter.x, m_panLimits.position.x, m_panLimits.position.x + m_panLimits.size.x);
+        if (m_panLimits.size.y > 0.0f)
+            m_cameraCenter.y = std::clamp(m_cameraCenter.y, m_panLimits.position.y, m_panLimits.position.y + m_panLimits.size.y);
+    }
+
     // Update camera center position
     m_camera.setCenter(m_cameraCenter);
 }

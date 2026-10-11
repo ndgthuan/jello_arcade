@@ -54,7 +54,7 @@ void GameSystemInitializer::initializeRenderer(
     // Create and initialize background manager
     auto backgroundManager = std::make_shared<BackgroundManager>();
     backgroundManager->setResourceService(resourceService);
-    backgroundManager->loadBackground("MenuBackground");
+    backgroundManager->generateTwilight();
     backgroundManager->centerBackground(windowSize);
 
     // Set background manager to renderer

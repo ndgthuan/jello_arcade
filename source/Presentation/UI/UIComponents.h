@@ -247,6 +247,9 @@ public:
     void update(float deltaTime);
     void setHoverScale(float scale);
 
+    // Primary item gets an accent fill and a pulsing ring so it reads as the main action
+    void setPrimary(bool primary, const sf::Color &accent);
+
     // Rendering methods
     void draw(sf::RenderWindow &window);
 
@@ -268,6 +271,11 @@ private:
     float m_hoverScale;
     float m_hoverScaleTarget;
     float m_hoverScaleSpeed;
+
+    // Primary item highlight
+    bool m_primary = false;
+    sf::Color m_accent = sf::Color::White;
+    float m_pulseTime = 0.0f;
 
     // Icon identification
     std::string m_iconName;
