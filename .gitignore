@@ -13,3 +13,4 @@ game.log
 flappy_best.dat
 userdata.json
 docs/*.png
+dist/
