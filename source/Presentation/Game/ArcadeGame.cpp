@@ -5,6 +5,12 @@
 
 namespace Flappy
 {
+    namespace
+    {
+        // Stick / POV deflection (out of 100) below which a direction counts as released
+        constexpr float kPadDeadZone = 50.0f;
+    }
+
     ArcadeGame::ArcadeGame(const sf::Font &font, int gameId, int musicTrack)
         : m_font(&font),
           m_gameId(gameId),
@@ -73,14 +79,25 @@ namespace Flappy
         applyViewport(window);
         window.setKeyRepeatEnabled(false);
 
-        const auto *keyDown = event.getIf<sf::Event::KeyPressed>();
+        // Losing focus pauses a running game; there is no FocusGained handler, so it never auto-resumes
+        if (event.is<sf::Event::FocusLost>())
+        {
+            if (m_state == State::Playing)
+            {
+                pauseGame();
+            }
+            return;
+        }
+
+        const auto *keyPress = event.getIf<sf::Event::KeyPressed>();
         const auto *keyUp = event.getIf<sf::Event::KeyReleased>();
         const auto *press = event.getIf<sf::Event::MouseButtonPressed>();
         const auto *release = event.getIf<sf::Event::MouseButtonReleased>();
         const auto *move = event.getIf<sf::Event::MouseMoved>();
+        const auto *padPress = event.getIf<sf::Event::JoystickButtonPressed>();
 
         // M mutes / unmutes everything, in any state
-        if (keyDown && keyDown->code == sf::Keyboard::Key::M)
+        if (keyPress && keyPress->code == sf::Keyboard::Key::M)
         {
             m_audio.toggleMute();
             UserData::instance().settings().muted = m_audio.isMuted();
@@ -93,12 +110,18 @@ namespace Flappy
             m_mouse = mouseToLogical(window, move->position);
         }
 
-        const bool escKey = keyDown && keyDown->code == sf::Keyboard::Key::Escape;
-        const bool pauseKey = keyDown && keyDown->code == sf::Keyboard::Key::P;
+        const bool escKey = keyPress && keyPress->code == sf::Keyboard::Key::Escape;
+        const bool pauseKey = keyPress && keyPress->code == sf::Keyboard::Key::P;
         const bool leftPress = press && press->button == sf::Mouse::Button::Left;
         const bool leftRelease = release && release->button == sf::Mouse::Button::Left;
-        const bool confirmKey = keyDown && (keyDown->code == sf::Keyboard::Key::Space ||
-                                            keyDown->code == sf::Keyboard::Key::Enter);
+        const bool confirmKey = keyPress && (keyPress->code == sf::Keyboard::Key::Space ||
+                                             keyPress->code == sf::Keyboard::Key::Enter);
+
+        // First gamepad only: A = Space, B = Escape, Start = pause / resume
+        const bool padOwn = padPress && padPress->joystickId == 0;
+        const bool padA = padOwn && padPress->button == 0;
+        const bool padB = padOwn && padPress->button == 1;
+        const bool padStart = padOwn && padPress->button == 7;
 
         auto runAction = [this](Action action)
         {
@@ -130,30 +153,39 @@ namespace Flappy
             {
                 onMouseMoved(m_mouse);
             }
-            else if (keyDown && isStartKey(keyDown->code))
+            else if (keyPress && isStartKey(keyPress->code))
             {
                 beginPlaying();
-                onKeyPressed(keyDown->code);
+                onKeyPressed(keyPress->code);
             }
             else if (leftPress && startsOnClick())
             {
                 beginPlaying();
                 onMousePressed(mouseToLogical(window, press->position), press->button);
             }
-            else if (escKey)
+            else if (padA && isStartKey(sf::Keyboard::Key::Space))
+            {
+                beginPlaying();
+                onKeyPressed(sf::Keyboard::Key::Space);
+            }
+            else if (escKey || padB)
             {
                 exitToMenu();
             }
             break;
 
         case State::Playing:
-            if (escKey || pauseKey)
+            if (escKey || pauseKey || padStart)
             {
                 pauseGame();
             }
-            else if (keyDown)
+            else if (keyPress)
             {
-                onKeyPressed(keyDown->code);
+                onKeyPressed(keyPress->code);
+            }
+            else if (padA)
+            {
+                onKeyPressed(sf::Keyboard::Key::Space);
             }
             else if (keyUp)
             {
@@ -183,7 +215,7 @@ namespace Flappy
             break;
 
         case State::Paused:
-            if (escKey || pauseKey)
+            if (escKey || pauseKey || padStart || padB)
             {
                 resumeGame();
             }
@@ -202,11 +234,11 @@ namespace Flappy
             break;
 
         case State::GameOver:
-            if (confirmKey && m_gameOver.acceptsInput())
+            if ((confirmKey || padA) && m_gameOver.acceptsInput())
             {
                 start();
             }
-            else if (escKey)
+            else if (escKey || padB)
             {
                 exitToMenu();
             }
@@ -229,6 +261,7 @@ namespace Flappy
     void ArcadeGame::update(float dt)
     {
         dt = std::clamp(dt, 0.0f, 0.05f);
+        pollGamepad();
         m_clock += dt;
         m_effects.update(dt);
         m_hud.update(dt);
@@ -346,6 +379,87 @@ namespace Flappy
     sf::Vector2f ArcadeGame::mouseToLogical(const sf::RenderWindow &window, sf::Vector2i pixel) const
     {
         return window.mapPixelToCoords(pixel, m_view);
+    }
+
+    bool ArcadeGame::keyDown(sf::Keyboard::Key key) const
+    {
+        if (sf::Keyboard::isKeyPressed(key))
+        {
+            return true;
+        }
+        switch (key)
+        {
+        case sf::Keyboard::Key::Left:
+        case sf::Keyboard::Key::A:
+            return m_pad.left;
+        case sf::Keyboard::Key::Right:
+        case sf::Keyboard::Key::D:
+            return m_pad.right;
+        case sf::Keyboard::Key::Up:
+        case sf::Keyboard::Key::W:
+            return m_pad.up;
+        case sf::Keyboard::Key::Down:
+        case sf::Keyboard::Key::S:
+            return m_pad.down;
+        case sf::Keyboard::Key::Space:
+            return m_pad.confirm;
+        default:
+            return false;
+        }
+    }
+
+    void ArcadeGame::pollGamepad()
+    {
+        const PadState previous = m_pad;
+        PadState now;
+        if (sf::Joystick::isConnected(0))
+        {
+            const float x = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::X);
+            const float y = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::Y);
+            const float povX = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX);
+            const float povY = sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY);
+            now.left = x < -kPadDeadZone || povX < -kPadDeadZone;
+            now.right = x > kPadDeadZone || povX > kPadDeadZone;
+            // Stick Y is negative upward, POV Y is positive upward
+            now.up = y < -kPadDeadZone || povY > kPadDeadZone;
+            now.down = y > kPadDeadZone || povY < -kPadDeadZone;
+            now.confirm = sf::Joystick::isButtonPressed(0, 0);
+        }
+        m_pad = now;
+
+        // A direction that newly crosses the dead zone acts like a fresh arrow key press
+        if (now.left && !previous.left)
+        {
+            padKeyPressed(sf::Keyboard::Key::Left);
+        }
+        if (now.right && !previous.right)
+        {
+            padKeyPressed(sf::Keyboard::Key::Right);
+        }
+        if (now.up && !previous.up)
+        {
+            padKeyPressed(sf::Keyboard::Key::Up);
+        }
+        if (now.down && !previous.down)
+        {
+            padKeyPressed(sf::Keyboard::Key::Down);
+        }
+    }
+
+    void ArcadeGame::padKeyPressed(sf::Keyboard::Key key)
+    {
+        if (m_state == State::Ready)
+        {
+            if (isStartKey(key))
+            {
+                beginPlaying();
+                onKeyPressed(key);
+            }
+        }
+        else if (m_state == State::Playing)
+        {
+            onKeyPressed(key);
+        }
     }
 
     void ArcadeGame::beginPlaying()

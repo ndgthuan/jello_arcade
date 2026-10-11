@@ -22,7 +22,7 @@ namespace Panels
     // Owns the four panels and shows one at a time over the menu.
     //   draw(): in the window's default view fill the whole window with a dark violet dim (alpha ~170, animated
     //   in with the panel); then switch to a letterboxed 16:9 view of the logical 1280x720 space (the same math as
-    //   Flappy::FlappyGame::applyViewport) and draw the panel; finally restore the default view.
+    //   Flappy::ArcadeGame::applyViewport) and draw the panel; finally restore the default view.
     //   Events: mouse move / press / release (left button) are mapped with window.mapPixelToCoords to the logical
     //   view; TextEntered goes to Panel::handleText; KeyPressed goes to Panel::handleKey, except Escape which
     //   closes the panel. A panel's closeRequested() closes it as well.

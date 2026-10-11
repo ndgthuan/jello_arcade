@@ -1,27 +1,27 @@
 #!/bin/bash
+# Always work from the folder this script lives in
+cd "$(dirname "$0")" || exit 1
 
-echo "Building Jello..."
+echo "============================================"
+echo " Building Jello"
+echo " SFML 3 is downloaded and built automatically if it is not installed."
+echo " The first build takes several minutes and needs git and internet access."
+echo "============================================"
+echo
 
-# Create build directory if it doesn't exist
-mkdir -p build
-cd build
-
-# Configure with CMake
-echo "Configuring with CMake..."
-cmake .. -DCMAKE_BUILD_TYPE=Release
-if [ $? -ne 0 ]; then
-    echo "CMake configuration failed!"
+echo "[1/2] Configuring with CMake..."
+if ! cmake -S . -B build -DCMAKE_BUILD_TYPE=Release; then
+    echo "CMake configuration failed! Check the messages above."
     exit 1
 fi
 
-# Build the project
-echo "Building project..."
-cmake --build . --config Release
-if [ $? -ne 0 ]; then
-    echo "Build failed!"
+echo
+echo "[2/2] Compiling..."
+if ! cmake --build build --config Release -j; then
+    echo "Build failed! Check the messages above."
     exit 1
 fi
 
+echo
 echo "Build completed successfully!"
-echo "Executable created: release/Jello"
-
+echo "Executable: release/Jello"

@@ -6,7 +6,8 @@
 #include <vector>
 
 // Everything the player can change and everything the game remembers: settings and local player profiles.
-// Stored as JSON in "userdata.json" (working directory). All mutating calls save immediately.
+// Stored as JSON in %APPDATA%/Jello/userdata.json (the working directory is used when APPDATA is not set).
+// All mutating calls save immediately.
 struct Settings
 {
     int musicVolume = 70;  // 0..100

@@ -3,11 +3,34 @@
 #include "../Config/json.hpp"
 #include <algorithm>
 #include <cctype>
+#include <cstdlib>
+#include <filesystem>
 #include <fstream>
+#include <system_error>
 
 namespace
 {
-    const char *kFile = "userdata.json";
+    namespace fs = std::filesystem;
+
+    // Old location (working directory); read once as a migration source when the new file does not exist yet.
+    const char *kLegacyFile = "userdata.json";
+
+    // %APPDATA%\Jello\userdata.json on Windows; $HOME/.local/share/Jello/userdata.json elsewhere when HOME is set;
+    // otherwise the working directory.
+    fs::path dataFile()
+    {
+        if (const char *appData = std::getenv("APPDATA"); appData && *appData)
+        {
+            return fs::path(appData) / "Jello" / "userdata.json";
+        }
+#ifndef _WIN32
+        if (const char *home = std::getenv("HOME"); home && *home)
+        {
+            return fs::path(home) / ".local" / "share" / "Jello" / "userdata.json";
+        }
+#endif
+        return fs::path(kLegacyFile);
+    }
 
     std::string lower(std::string s)
     {
@@ -58,7 +81,16 @@ void UserData::resetDefaults()
 
 bool UserData::load()
 {
-    std::ifstream in(kFile);
+    const fs::path file = dataFile();
+    std::error_code ec;
+    fs::path source = file;
+    if (!fs::exists(file, ec) && fs::exists(kLegacyFile, ec))
+    {
+        // Migration: the next save() writes the new location; the old file is left in place
+        source = kLegacyFile;
+    }
+
+    std::ifstream in(source);
     if (!in)
     {
         return false;
@@ -174,7 +206,14 @@ bool UserData::save() const
                                  {"totalScore", p.totalScore}});
     }
 
-    std::ofstream out(kFile, std::ios::trunc);
+    const fs::path file = dataFile();
+    if (file.has_parent_path())
+    {
+        std::error_code ec;
+        fs::create_directories(file.parent_path(), ec); // errors are ignored; the open below reports failure
+    }
+
+    std::ofstream out(file, std::ios::trunc);
     if (!out)
     {
         return false;

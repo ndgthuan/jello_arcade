@@ -102,7 +102,8 @@ namespace Flappy
         float runTime() const { return m_runTime; } // seconds since the run began (Playing time)
         float clockTime() const { return m_clock; } // seconds since start(), always advancing (for animation)
         sf::Vector2f mousePosition() const { return m_mouse; }
-        static bool keyDown(sf::Keyboard::Key key) { return sf::Keyboard::isKeyPressed(key); }
+        // True while the key is held on the keyboard or the matching gamepad control (first pad only, see handleEvent)
+        bool keyDown(sf::Keyboard::Key key) const;
 
     private:
         const sf::Font *m_font;
@@ -132,6 +133,19 @@ namespace Flappy
         sf::View m_view;
         std::function<void()> m_exitToMenu;
 
+        // Gamepad state sampled in update(): sticks / POV past the dead zone, A button
+        struct PadState
+        {
+            bool left = false;
+            bool right = false;
+            bool up = false;
+            bool down = false;
+            bool confirm = false;
+        };
+        PadState m_pad;
+
+        void pollGamepad();
+        void padKeyPressed(sf::Keyboard::Key key);
         void applyViewport(const sf::RenderWindow &window);
         sf::Vector2f mouseToLogical(const sf::RenderWindow &window, sf::Vector2i pixel) const;
         void beginPlaying();

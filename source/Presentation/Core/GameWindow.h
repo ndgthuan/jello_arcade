@@ -2,11 +2,12 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
+#include <functional>
 #include <memory>
 #include <string>
 #include <cstdint>
 #include "IGameCoordinator.h"
-#include "../Game/FlappyGame.h"
+#include "../Game/BounceGame.h"
 #include "../Game/SmashGame.h"
 #include "../Game/BlasterGame.h"
 #include "../Game/SlitherGame.h"
@@ -65,6 +66,28 @@ private:
     // Esc that closed a panel / left the game may still be held down: the menu must not read it as "exit app"
     bool m_waitEscRelease = false;
 
+    // Set after the window is (re)created: focus is requested once on the next frame
+    bool m_needsFocus = false;
+
+    // Fade to black between the menu and a game: 0.2 s out, switch at full black, 0.25 s in
+    enum class FadeState
+    {
+        None,
+        Out,
+        In
+    };
+    FadeState m_fade = FadeState::None;
+    float m_fadeTimer = 0.f;
+    std::function<void()> m_fadeAction; // runs at full black
+
+    // FPS overlay (F3) and the FPS log line every 10 s
+    bool m_showFps = false;
+    bool m_prevF3 = false;
+    float m_avgFrameTime = 0.f; // exponential moving average of the frame time
+    float m_logTime = 0.f;
+    int m_logFrames = 0;
+    float m_logMinFps = 0.f;
+
     // Window state tracking - from WindowManager
     bool m_isFullscreen;
 
@@ -77,4 +100,9 @@ private:
     void processGameEvents();
     void processPanelEvents();
     void applyAudioSettings();
+    void startFade(std::function<void()> action);
+    void updateFade(float dt);
+    void drawFade();
+    void updateFrameStats(float dt);
+    void drawFpsOverlay();
 };

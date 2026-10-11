@@ -4,7 +4,7 @@
 #include <cstdint>
 
 // Shared constants and small helpers for the "Jello Bounce" (flappy-style) game.
-// The game is drawn in a fixed logical resolution of 1280x720; FlappyGame maps it to the window.
+// The game is drawn in a fixed logical resolution of 1280x720; ArcadeGame maps it to the window.
 namespace Flappy
 {
     inline constexpr float kWidth = 1280.0f;
